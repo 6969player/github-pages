@@ -1,0 +1,114 @@
+--Instances:
+
+local SpamUI = Instance.new("ScreenGui")
+local TextButton = Instance.new("TextButton")
+local Frame = Instance.new("Frame")
+local SpamButton = Instance.new("TextButton")
+local TextLabel = Instance.new("TextLabel")
+local CloseButton = Instance.new("TextButton")
+
+--Properties:
+
+SpamUI.Name = "SpamUI"
+SpamUI.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+SpamUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+SpamUI.ResetOnSpawn = false
+
+TextButton.Parent = SpamUI
+TextButton.BackgroundColor3 = Color3.fromRGB(130, 255, 247)
+TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0, 60, 0, 500)
+TextButton.Size = UDim2.new(0, 150, 0, 20)
+TextButton.AutoButtonColor = false
+TextButton.Font = Enum.Font.SourceSans
+TextButton.Text = "	Auto parry Gun ball "
+TextButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.TextSize = 15.500
+TextButton.TextXAlignment = Enum.TextXAlignment.Left
+TextButton.Draggable = true
+
+
+Frame.Parent = TextButton
+Frame.BackgroundColor3 = Color3.fromRGB(7, 27, 143)
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0, 0, 1, 0)
+Frame.Size = UDim2.new(0, 150, 0, 120)
+
+SpamButton.Name = "Spam Button"
+SpamButton.Parent = Frame
+SpamButton.BackgroundColor3 = Color3.fromRGB(17, 0, 255)
+SpamButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+SpamButton.BorderSizePixel = 0
+SpamButton.Position = UDim2.new(0, 5, 0, 5)
+SpamButton.AutoButtonColor = false
+SpamButton.Size = UDim2.new(0, 140, 0, 110)
+SpamButton.Font = Enum.Font.SourceSans
+SpamButton.Text = "auto parry"
+SpamButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpamButton.TextSize = 20.000
+
+
+-- Scripts:
+
+local function DWUZYAW_fake_script() -- SpamButton.Script 
+	local script = Instance.new('Script', SpamButton)
+
+	local toggle = false
+
+	function change()
+		if toggle == false then
+			toggle = true
+			SpamButton.Text = "Auto parry active"
+			game:GetService("TweenService"):Create(SpamButton,TweenInfo.new(0.3,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{TextColor3 = Color3.fromRGB(180, 206, 255)}):Play()
+		else
+			toggle = false
+			SpamButton.Text = "auto parry disable"
+			game:GetService("TweenService"):Create(SpamButton,TweenInfo.new(0.3,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+		end
+		if toggle then
+			Timer = game:GetService("RunService").Heartbeat:Connect(function()
+				local args = {
+					{
+						name = "defense",
+						origin = "balltargets"
+					},
+					{}
+				}
+				game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
+
+			end)
+		else
+			if Timer then
+				Timer:Disconnect()
+			end
+		end
+	end
+
+
+	SpamButton.MouseButton1Click:Connect(function()
+		change()
+	end)
+
+	CloseButton.MouseButton1Click:Connect(function()
+		SpamUI:Destroy()
+	end)
+
+	local key = game:GetService("UserInputService")
+
+	key.InputBegan:Connect(function(input, gameprocessed)
+		if input.KeyCode == Enum.KeyCode.E and not gameprocessed then
+			change()
+		end
+	end)
+end
+coroutine.wrap(DWUZYAW_fake_script)()
+
+CloseButton.MouseEnter:Connect(function()
+	game:GetService("TweenService"):Create(CloseButton,TweenInfo.new(0.15,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{BackgroundColor3 = Color3.fromRGB(255, 0, 0)}):Play()
+end)
+
+CloseButton.MouseLeave:Connect(function()
+	game:GetService("TweenService"):Create(CloseButton,TweenInfo.new(0.15,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),{BackgroundColor3 = Color3.fromRGB(25, 25, 25)}):Play()
+end)
