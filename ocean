@@ -1,0 +1,91 @@
+--Gui v2
+local Players = game:GetService("Players")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local Player = Players.LocalPlayer
+local isClicking = false
+local clicksPerSecond = 150
+local clickInterval = 1 / clicksPerSecond
+local lastClickTime = 0
+
+-- GUI (только для отображения статуса)
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = Player:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
+
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 150, 0, 50)
+Frame.Position = UDim2.new(0, 10, 0, 10)
+Frame.BackgroundColor3 = Color3.new(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Parent = ScreenGui
+
+local StatusLabel = Instance.new("TextLabel")
+StatusLabel.Size = UDim2.new(1, 0, 1, 0)
+StatusLabel.BackgroundColor3 = Color3.new(0.117647, 0.117647, 0.117647)
+StatusLabel.TextColor3 = Color3.new(1, 1, 1)
+StatusLabel.Text = "Waver inactive"
+StatusLabel.Parent = Frame
+
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(1, 0, 1, 0)
+ToggleButton.BackgroundColor3 = Color3.new(0, 0, 0)
+ToggleButton.TextColor3 = Color3.new(1, 1, 1)
+ToggleButton.Text = "Waver inactive"
+ToggleButton.Parent = Frame
+
+local function toggleClicking()
+	isClicking = not isClicking
+	StatusLabel.Text = isClicking and "Waver" or "Waver inactive"
+	ToggleButton.Text = isClicking and "Waver" or "Waver inactive"
+end
+
+-- Активация/деактивация по клавише "E"
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+	if not gameProcessedEvent and input.KeyCode == Enum.KeyCode.E then
+		toggleClicking()
+	end
+end)
+
+-- Активация/деактивация по нажатию на кнопку
+ToggleButton.Activated:Connect(toggleClicking)
+
+RunService.RenderStepped:Connect(function()
+	if isClicking then
+		local currentTime = tick()
+		if currentTime - lastClickTime >= clickInterval then
+			lastClickTime = currentTime
+			VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+			VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+		end
+	end
+end)
+RunService.RenderStepped:Connect(function()
+	if isClicking then
+		local currentTime = tick()
+		if currentTime - lastClickTime >= clickInterval then
+			lastClickTime = currentTime
+			VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+			VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+		end
+	end
+end)
+local Library = loadstring(Game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+
+local PhantomForcesWindow = Library:NewWindow("Waver hub v2⛅")
+
+local KillingCheats = PhantomForcesWindow:NewSection("main")
+
+KillingCheats:CreateToggle("Auto Parry", function(value)
+	loadstring(game:HttpGet("https://pastebin.com/raw/k5dMnXEa"))()
+end)
+
+KillingCheats:CreateToggle("Auto Spam (need fix next time)", function(value)
+	loadstring(game:HttpGet("https://pastebin.com/raw/iFseQRMG"))()
+end)
+
+KillingCheats:CreateButton("the script was not bypass", function()
+	print("PremiumOnlyUser     ")
+end)
